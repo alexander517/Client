@@ -1,5 +1,5 @@
 const SDK = {
-  serverURL: "http://dis-bookstore.herokuapp.com/api",
+  serverURL: "http://localhost:8080/api",
   request: (options, cb) => {
 
     let headers = {};
@@ -96,10 +96,7 @@ const SDK = {
     }
   },
   User: {
-    findAll: (cb) => {
-      SDK.request({method: "GET", url: "/staffs"}, cb);
-    },
-    current: () => {
+      current: () => {
       return SDK.Storage.load("user");
     },
     logOut: () => {
@@ -114,7 +111,7 @@ const SDK = {
           email: email,
           password: password
         },
-        url: "/users/login?include=user",
+        url: "/start/login",
         method: "POST"
       }, (err, data) => {
 
@@ -139,7 +136,7 @@ const SDK = {
           `);
         } else {
           $(".navbar-right").html(`
-            <li><a href="login.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+            <li><a href="signup.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
             <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Log In</a></li>
           `);
         }
