@@ -1,5 +1,5 @@
 const SDK = {
-  serverURL: "http://localhost:8080/api",
+  serverURL: "http://dis-bookstore.herokuapp.com/api",
   request: (options, cb) => {
 
     let headers = {};
@@ -111,7 +111,7 @@ const SDK = {
           email: email,
           password: password
         },
-        url: "/start/login",
+        url: "/users/login?include=user",
         method: "POST"
       }, (err, data) => {
 
