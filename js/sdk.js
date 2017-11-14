@@ -139,6 +139,7 @@ const SDK = {
           `);
         } else {
           $(".navbar-right").html(`
+            <li><a href="login.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
             <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Log In</a></li>
           `);
         }
