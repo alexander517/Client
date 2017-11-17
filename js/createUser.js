@@ -2,12 +2,12 @@ $(document).ready(() => {
 
     SDK.User.loadNav();
 
-    $("#login-button").click(() => {
+    $("#signup-button").click(() => {
 
         const username = $("#inputUsername").val();
         const password = $("#inputPassword").val();
 
-        SDK.User.login(username, password, (err, data) => {
+        SDK.User.createUser(username, password, (err, data) => {
             if (err && err.xhr.status === 401) {
                 $(".form-group").addClass("has-error");
             }
