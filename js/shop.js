@@ -1,82 +1,94 @@
 $(document).ready(() => {
 
     SDK.User.loadNav();
-    const $bookList = $("#book-list");
+    const currentUser = SDK.User.current();
+    const $itemList = $("#item-list");
 
-    SDK.Book.findAll((err, books) => {
-        books.forEach((book) => {
+    if(currentUser) {
 
-            const bookHtml = `
-        <div class="col-lg-4 book-container">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">${book.title}</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="col-lg-4">
-                        <img src="${book.imgUrl}"/>
-                    </div>
-                    <div class="col-lg-8">
-                      <dl>
-                        <dt>Subtitle</dt>
-                        <dd>${book.subtitle}</dd>
-                        <dt>Publisher</dt>
-                        <dd>${book.publisher}</dd>
-                        <dt>ISBN</dt>
-                        <dd>${book.isbn}</dd>
-                      </dl>
-                    </div>
-                </div>
-                <div class="panel-footer">
-                    <div class="row">
-                        <div class="col-lg-4 price-label">
-                            <p>Kr. <span class="price-amount">${book.price}</span></p>
-                        </div>
-                        <div class="col-lg-8 text-right">
-                            <button class="btn btn-success purchase-button" data-book-id="${book.id}">Add to basket</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>`;
+        SDK.Item.findAll((err, items) => {
+            items.forEach((item) => {
 
-            $bookList.append(bookHtml);
+                console.log(item);
 
-        });
+                const itemHtml = `
+              <div class="col-lg-4 item-container">
+                  <div class="panel panel-default">
+                      <div class="panel-heading">
+                          <h3 class="panel-title">${item.itemName}</h3>
+                      </div>
+                      <div class="panel-body">
+                          <div class="col-lg-8">
+                          <img src="${item.itemUrl}"/>
+                          </div>
+                          <div class="col-lg-4">
+                            <dl>
+                              <dt>Beskrivelse</dt>
+                              <dd>${item.itemDescription}</dd>
+                            </dl>
+                          </div>
+                      </div>
+                      <div class="panel-footer">
+                          <div class="row">
+                              <div class="col-lg-4 price-label">
+                                  <p><span class="price-amount">${item.itemPrice} kr.</span></p>
+                              </div>
+                              <div class="col-lg-8 text-right">
+                                  <button class="btn btn-success purchase-button" data-item-id="${item.itemId}">Læg i kurv</button>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>`;
 
-        $(".purchase-button").click(function () {
-            $("#purchase-modal").modal("toggle");
+                $itemList.append(itemHtml);
 
-            const bookId = $(this).data("book-id");
-            const book = books.find((book) => book.id === bookId);
-            SDK.Book.addToBasket(book);
-
-        });
-
-    });
-
-    $("#purchase-modal").on("shown.bs.modal", () => {
-            const basket = SDK.Storage.load("basket");
-            const $modalTbody = $("#modal-tbody");
-
-            //clearer tabellen der ligger inde i den modal der popper op når purchase trykkes.
-            $modalTbody.html("");
-            basket.forEach((entry) => {
-
-                $modalTbody.append(`
-        <tr>
-            <td>
-                <img src="${entry.book.imgUrl}" height="60"/>
-            </td>
-            <td>${entry.book.title}</td>
-            <td>${entry.count}</td>
-            <td>kr. ${entry.book.price}</td>
-            <td>kr. 0</td>
-        </tr>
-      `);
             });
 
-        }
-    );
-});
+            $(".purchase-button").click(function () {
+                const itemId = $(this).data("item-id");
+                const item = items.find((item) => item.itemId === itemId);
+                SDK.Item.addToBasket(item);
+                $("#purchase-modal").modal("toggle");
+            });
+        });
 
+        $("#purchase-modal").on("shown.bs.modal", () => {
+            const basket = SDK.Storage.load("basket");
+            const $modalTBody = $("#modal-tbody");
+            $modalTBody.empty();
+            basket.forEach((entry) => {
+                const total = entry.item.itemPrice * entry.count;
+                $modalTBody.append(`
+            <tr>
+                <td>
+                   <img src="${entry.item.itemUrl}" height="60"/>
+                </td>
+                <td>${entry.item.itemName}</td>
+                <td>${entry.count}</td>
+                <td>${entry.item.itemPrice} kr.</td>
+                <td>${total} kr.</td>
+                <td>
+                <button class="btn btn-default remove-icon" data-item-id="${entry.item.itemId}">
+                </button>
+                </td>
+                
+            </tr>
+          `);
+
+            });
+
+            $(".remove-icon").click(function () {
+                const itemId = $(this).data("item-id");
+                SDK.Item.removeFromBasket(itemId);
+                $("#purchase-modal").modal("toggle");
+
+            });
+
+        });
+
+    } else {
+        window.location.href = "login.html";
+    }
+
+});

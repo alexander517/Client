@@ -5,7 +5,7 @@ $(document).ready(() => {
     const $basketTbody = $("#basket-tbody");
 
     $(".page-header").html(`
-    <h1>Hi, ${currentUser.firstName} ${currentUser.lastName}</h1>
+    <h1>Hi, ${currentUser.username}</h1>
   `);
 
     $(".img-container").html(`
@@ -15,11 +15,9 @@ $(document).ready(() => {
     $(".profile-info").html(`
     <dl>
         <dt>Name</dt>
-        <dd>${currentUser.firstName} ${currentUser.lastName}</dd>
-        <dt>Email</dt>
         <dd>${currentUser.username}</dd>
         <dt>ID</dt>
-        <dd>${currentUser.id}</dd>
+        <dd>${currentUser.user_id}</dd>
      </dl>
   `);
 

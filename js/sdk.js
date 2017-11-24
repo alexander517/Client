@@ -25,85 +25,139 @@ const SDK = {
         });
 
     },
-    Book: {
-        addToBasket: (book) => {
+    Item: {
+        addToBasket: (item) => {
             let basket = SDK.Storage.load("basket");
 
             //Has anything been added to the basket before?
             if (!basket) {
                 return SDK.Storage.persist("basket", [{
                     count: 1,
-                    book: book
+                    item: item
                 }]);
             }
 
-            //Does the book already exist?
-            let foundBook = basket.find(b => b.book.id === book.id);
-            if (foundBook) {
-                let i = basket.indexOf(foundBook);
+            //Does the item already exist?
+            let foundItem = basket.find(i => i.item.itemId === item.itemId);
+            if (foundItem) {
+                let i = basket.indexOf(foundItem);
                 basket[i].count++;
             } else {
                 basket.push({
                     count: 1,
-                    book: book
+                    item: item
                 });
             }
 
             SDK.Storage.persist("basket", basket);
         },
+
+        removeFromBasket: (itemId) => {
+            let basket = SDK.Storage.load("basket");
+            for (let i = 0; i<basket.length; i++){
+                if (basket[i].item.itemId === itemId){
+                    if (basket[i].count > 1){
+                        basket[i].count--;
+                    }
+                    else{
+                        basket.splice(i, 1);
+                    }
+                }
+            }
+            SDK.Storage.persist("basket", basket);
+        },
+
         findAll: (cb) => {
             SDK.request({
                 method: "GET",
-                url: "/books",
+                url: "/user/getItems",
                 headers: {
-                    filter: {
-                        include: ["authors"]
-                    }
+                    authorization: "Bearer " + SDK.User.current().token
                 }
             }, cb);
         },
-        create: (data, cb) => {
-            SDK.request({
-                method: "POST",
-                url: "/books",
-                data: data,
-                headers: {authorization: SDK.Storage.load("tokenId")}
-            }, cb);
-        }
     },
-    Author: {
-        findAll: (cb) => {
-            SDK.request({method: "GET", url: "/authors"}, cb);
-        }
-    },
+
     Order: {
-        create: (data, cb) => {
+        create: (items, cb) => {
             SDK.request({
                 method: "POST",
-                url: "/orders",
-                data: data,
-                headers: {authorization: SDK.Storage.load("tokenId")}
-            }, cb);
+                url: "/user/createOrder",
+                data:
+                    {
+                        User_userId: SDK.User.current().user_id,
+                        items: items
+                    },
+                headers: {
+                    authorization: "Bearer " + SDK.User.current().token
+                }
+            }, (err, data) => {
+                if (err) return cb(err);
+                cb(null, data);
+            })
         },
+
         findMine: (cb) => {
             SDK.request({
                 method: "GET",
-                url: "/orders/" + SDK.User.current().id + "/allorders",
+                url: "/user/getOrdersById/" + SDK.User.current().user_id,
                 headers: {
-                    authorization: SDK.Storage.load("tokenId")
+                    authorization: "Bearer " + SDK.User.current().token
                 }
             }, cb);
+        },
+
+        findAll: (cb) => {
+            SDK.request({
+                method: "GET",
+                url: "/staff/getOrders",
+                headers: {
+                    authorization: "Bearer " + SDK.User.current().token
+                }
+            }, cb);
+        },
+
+        makeReady: (orderId, cb) => {
+            SDK.request({
+                method: "POST",
+                url: "/staff/makeReady/" + orderId,
+                data: {
+                    orderId: orderId
+                },
+                headers: {
+                    authorization: "Bearer " + SDK.User.current().token
+                }
+            }, (err, data) => {
+                if (err) return cb(err);
+                cb(null, data);
+            });
         }
     },
+
     User: {
         current: () => {
-            return SDK.Storage.load("user");
+            return JSON.parse(localStorage.getItem("user"));
         },
-        logOut: () => {
-            SDK.Storage.remove("tokenId");
-            SDK.Storage.remove("userId");
-            SDK.Storage.remove("user");
+        logOut: (user_id, cb) => {
+            SDK.request({
+                data:{
+                    user_id: SDK.User.current().user_id
+                },
+                method: "POST",
+                url: "/start/logout",
+                headers: {
+                    authorization: "Bearer " + SDK.User.current().token
+                }
+            }, (err, data) => {
+                if (err) return cb(err);
+                cb(null, data);
+
+            });
+
+            localStorage.removeItem("user");
+            SDK.Storage.remove("basket")
             window.location.href = "index.html";
+
         },
         login: (username, password, cb) => {
             SDK.request({
@@ -115,14 +169,28 @@ const SDK = {
                 method: "POST"
             }, (err, data) => {
 
-                console.log(err)
-
                 //On login-error
                 if (err) return cb(err);
+                //console.log('sdk test', data);
+                localStorage.setItem("user", JSON.stringify(data));
 
-                SDK.Storage.persist("tokenId", data.id);
-                SDK.Storage.persist("userId", data.userId);
-                SDK.Storage.persist("user", data.user);
+                cb(null, data);
+
+            });
+        },
+
+        createUser: (username, password, cb) => {
+            SDK.request({
+                data: {
+                    username: username,
+                    password: password
+                },
+                url: "/user/createUser",
+                method: "POST"
+            }, (err, data) => {
+
+                //On signup-error
+                if (err) return cb(err);
 
                 cb(null, data);
 
@@ -139,8 +207,8 @@ const SDK = {
           `);
                 } else {
                     $(".navbar-right").html(`
-            <li><a href="signup.html"><span class="glyphicon glyphicon-user"></span> Sign up</a></li>
-            <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Log in</a></li>
+            <li><a href="signup.html"><span class="glyphicon glyphicon-user"></span> Opret Bruger</a></li>
+            <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Log Ind</a></li>
           `);
                 }
                 $("#logout-link").click(() => SDK.User.logOut());
@@ -149,7 +217,7 @@ const SDK = {
         }
     },
     Storage: {
-        prefix: "BookStoreSDK",
+        prefix: "YoloSDK",
         persist: (key, value) => {
             window.localStorage.setItem(SDK.Storage.prefix + key, (typeof value === 'object') ? JSON.stringify(value) : value)
         },
