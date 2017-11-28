@@ -73,6 +73,7 @@ $(document).ready(() => {
                 <td>${subtotal} kr.</td>
                 <td>
                 <button class="btn btn-default remove-icon" data-item-id="${entry.item.itemId}">
+                    <span class="glyphicon glyphicon-remove"></span>
                 </button>
                 </td>
                 
