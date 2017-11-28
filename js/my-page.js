@@ -2,7 +2,7 @@ $(document).ready(() => {
 
     SDK.User.loadNav();
     const currentUser = SDK.User.current();
-    const $basketTbody = $("#basket-tbody");
+    const $basketTBody = $("#basket-tbody");
 
     $(".page-header").html(`
     <h1>Hi, ${currentUser.username}</h1>
@@ -24,7 +24,7 @@ $(document).ready(() => {
     SDK.Order.findMine((err, orders) => {
         if(err) throw err;
         orders.forEach(order => {
-            $basketTbody.append(`
+            $basketTBody.append(`
         <tr>
             <td>${order.id}</td>
             <td>${parseOrderItems(order.orderItems)}</td>

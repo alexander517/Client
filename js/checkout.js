@@ -3,7 +3,7 @@ $(document).ready(() => {
     SDK.User.loadNav();
 
     const currentUser = SDK.User.current();
-    const $modalTbody = $("#basket-tbody");
+    const $basketTBody = $("#basket-tbody");
     const $nothingInBasketContainer = $("#nothing-in-basket-container");
     const $checkoutTableContainer = $("#checkout-table-container");
 
@@ -25,7 +25,7 @@ $(document).ready(() => {
             basket.forEach(entry => {
                 let subtotal = entry.item.itemPrice * entry.count;
                 total += subtotal;
-                $modalTbody.append(`
+                $basketTBody.append(`
         <tr>
             <td>
                 <img src="${entry.item.itemUrl}" height="120"/>
@@ -43,7 +43,7 @@ $(document).ready(() => {
       `);
             });
 
-            $modalTbody.append(`
+            $basketTBody.append(`
           <tr>
             <td colspan="3"></td>
             <td><b>Total</b></td>
