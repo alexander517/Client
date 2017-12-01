@@ -52,6 +52,21 @@ const SDK = {
             SDK.Storage.persist("basket", basket);
         },
 
+        AddMoreToBasket: (itemId) => {
+            let basket = SDK.Storage.load("basket");
+            for (let i = 0; i<basket.length; i++){
+                if (basket[i].item.itemId === itemId){
+                    if (basket[i].count > 0){
+                        basket[i].count++;
+                    }
+                    else{
+                        basket.splice(i, 1);
+                    }
+                }
+            }
+            SDK.Storage.persist("basket", basket);
+        },
+
         removeFromBasket: (itemId) => {
             let basket = SDK.Storage.load("basket");
             for (let i = 0; i<basket.length; i++){
@@ -64,6 +79,20 @@ const SDK = {
                     }
                 }
             }
+
+            SDK.Storage.persist("basket", basket);
+        },
+
+            removeAllFromBasket: (itemId) => {
+                let basket = SDK.Storage.load("basket");
+                for (let i = 0; i<basket.length; i++){
+                    if (basket[i].item.itemId === itemId){
+                        if (basket[i].count >= 1){
+                            basket.splice(i, 1);
+                        }
+                    }
+                }
+
             SDK.Storage.persist("basket", basket);
         },
 
@@ -202,8 +231,8 @@ const SDK = {
                 const currentUser = SDK.User.current();
                 if (currentUser) {
                     $(".navbar-right").html(`
-            <li><a href="my-page.html">Your orders</a></li>
-            <li><a href="#" id="logout-link">Logout</a></li>
+                        <li><a href="my-page.html">Your orders</a></li>
+                        <li><a href="#" id="logout-link">Logout</a></li>
           `);
                 } else {
                     $(".navbar-right").html(`

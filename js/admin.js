@@ -31,9 +31,9 @@ $(document).ready(() => {
                     <div class="panel-body">
                         <div class="col-lg-8">
                             <dl>
-                                <dt>Ordre oprettet</dt>
+                                <dt>Ordre oprettet:</dt>
                                 <dd>${order.orderTime}</dd>
-                                <dt>Varer</dt>
+                                <dt>Varer:</dt>
                                 <dd>${$items}</dd>
                             </dl>
                             <button class="btn btn-success orderReady-button" data-order-id="${order.orderId}">Ordre klar</button>

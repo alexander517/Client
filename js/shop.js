@@ -65,21 +65,26 @@ $(document).ready(() => {
                 $modalTbody.append(`
             <tr>
                 <td>
-                   <img src="${entry.item.itemUrl}" height="60"/>
+                    <img src="${entry.item.itemUrl}" height="60"/>
                 </td>
                 <td>${entry.item.itemName}</td>
-                <td>${entry.count}</td>
+                <td>
+                    <button class="btn btn-default minus-icon" data-item-id="${entry.item.itemId}">
+                   <span class="glyphicon glyphicon-minus-sign"></span>
+                    </button>
+                    ${entry.count}
+                    <button class="btn btn-default add-icon" data-item-id="${entry.item.itemId}">
+                   <span class="glyphicon glyphicon-plus-sign"></span>
+                    </button>
                 <td>${entry.item.itemPrice} kr.</td>
                 <td>${subtotal} kr.</td>
                 <td>
-                <button class="btn btn-default remove-icon" data-item-id="${entry.item.itemId}">
-                    <span class="glyphicon glyphicon-remove"></span>
-                </button>
+                    <button class="btn btn-default remove-icon" data-item-id="${entry.item.itemId}">
+                   <span class="glyphicon glyphicon-remove"></span>
+                    </button>
                 </td>
-                
             </tr>
-          `);
-
+                    `);
             });
 
             $modalTbody.append(`
@@ -92,12 +97,28 @@ $(document).ready(() => {
           
         `);
 
+
             $(".remove-icon").click(function () {
+                const itemId = $(this).data("item-id");
+                SDK.Item.removeAllFromBasket(itemId);
+                $("#purchase-modal").modal("show");
+
+            });
+
+            $(".minus-icon").click(function () {
                 const itemId = $(this).data("item-id");
                 SDK.Item.removeFromBasket(itemId);
                 $("#purchase-modal").modal("show");
 
             });
+
+            $(".add-icon").click(function () {
+                const itemId = $(this).data("item-id");
+                SDK.Item.AddMoreToBasket(itemId);
+                $("#purchase-modal").modal("show");
+            });
+
+
 
         });
 

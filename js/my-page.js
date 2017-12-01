@@ -2,7 +2,9 @@ $(document).ready(() => {
 
         SDK.User.loadNav();
         const currentUser = SDK.User.current();
-        const $basketTBody = $("#basket-tbody");
+        const $basketTbody = $("#basket-tbody");
+        const $noOrdersContainer = $("#no-orders-container");
+        const $ordersContainer = $("#orders-container");
 
         if(currentUser) {
             if (!SDK.User.current().isPersonel) {
@@ -21,18 +23,37 @@ $(document).ready(() => {
       `);
 
         SDK.Order.findMine((err, orders) => {
-            if(err) throw err;
-                orders.forEach(order => {
+            if (err) throw err;
 
-                    $basketTBody.append(`
-            <tr>
-                <td>${order.id}</td>
-                <td>${parseOrderItems(order.orderItems)}</td>
-                <td>kr. ${sumTotal(order.orderItems)}</td>
-            </tr>
-          `);
-            });
-        });
+                if (!orders.length) {
+                        $ordersContainer.hide();
+                    } else {
+                        $noOrdersContainer.hide();
+                    }
+
+                    orders.forEach(order => {
+
+                        for (let i = 0; i < order.items.length; i++) {
+                            let orderStatus = "";
+                            if (order.isReady === true) {
+                                orderStatus = "Klar til afhentning";
+                            } else {
+                                orderStatus = "Ikke klar"
+                            }
+
+                            $basketTbody.append(`
+                  <tr>
+                  <td>${order.orderId}</td>
+                  <td>${order.items[i].itemName}</td>
+                  <td>${order.items[i].itemPrice + " kr"}</td>
+                  <td>${orderStatus}</td>
+                  </tr>
+                  
+           `);
+                        }
+                    });
+                });
+
 
             } else {
                 window.location.href = "admin.html"
