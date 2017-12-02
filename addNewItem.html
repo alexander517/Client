@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <link rel="stylesheet" href="lib/css/bootstrap.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <meta charset="UTF-8">
+    <title>Admin</title>
+
+</head>
+<body>
+
+<div class="container">
+
+    <div class="row" id="nav-container"></div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="page-header">
+                <h1>Personale</h1>
+                <h3>Tilføj nyt produkt</h3>
+            </div>
+        </div>
+    </div>
+            <form>
+                <div class="form-group">
+                    <label for="itemName">Navn</label>
+                    <input class="form-control" id="itemName" placeholder="Indtast navn på produkt"/>
+                </div>
+                <div class="form-group">
+                    <label for="itemDescription">Beskrivelse af produkt</label>
+                    <input class="form-control" id="itemDescription" placeholder="Indtast produktets beskrivelse"/>
+                </div>
+                <div class="form-group">
+                    <label for="itemPrice">Pris</label>
+                    <input class="form-control" id="itemPrice" placeholder="Indtast produktets pris (e.g 20)"/>
+                </div>
+                <div class="form-group">
+                    <label for="itemUrl">Pris</label>
+                    <input class="form-control" id="itemUrl" placeholder="Indtast produktets URL"/>
+                </div>
+                <div>
+                    <button class="btn btn-success" id="createItemBtn" type="button">Opret produkt</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <p class="text-muted">2017 © All rights reserved - YOLO INC.</p>
+    </div>
+</footer>
+
+<script src="lib/js/jquery-3.2.1.js"></script>
+<script src="lib/js/bootstrap.js"></script>
+<script src="js/sdk.js"></script>
+<script src="js/addNewItem.js"></script>
+
+</body>
+</html>

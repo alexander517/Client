@@ -26,6 +26,23 @@ const SDK = {
 
     },
     Item: {
+        create:(itemName, itemDescription, itemPrice, itemUrl, cb) => {
+            SDK.request({
+                    method:"POST",
+                    url:"/staff/createItem",
+                    data:{
+                        itemName:itemName,
+                        itemDescription:itemDescription,
+                        itemPrice:itemPrice,
+                        itemUrl:itemUrl
+                    },
+                    headers: {
+                        Authorization: "Bearer " + SDK.User.current().token
+                        }
+                    }
+                ,cb);
+        },
+
         addToBasket: (item) => {
             let basket = SDK.Storage.load("basket");
 
@@ -230,10 +247,35 @@ const SDK = {
             $("#nav-container").load("nav.html", () => {
                 const currentUser = SDK.User.current();
                 if (currentUser) {
-                    $(".navbar-right").html(`
+                    if (!SDK.User.current().isPersonel) {
+                        $(".navbar-left").html(`
+                        <li><a href="index.html">Hjem</a></li>
+                        <li><a href="shop.html">Shop</a></li>
+                        <li><a href="checkout.html">Kurv</a></li>
+                        <li><a href="om-os.html">Om os</a></li>
+          `);
+
+                        $(".navbar-right").html(`
                         <li><a href="my-page.html">Your orders</a></li>
                         <li><a href="#" id="logout-link">Logout</a></li>
           `);
+
+                    } else {
+                        $(".navbar-left").html(`
+                        <li><a href="index.html">Hjem</a></li>
+                        <li><a href="shop.html">Shop</a></li>
+                        <li><a href="checkout.html">Kurv</a></li>
+                        <li><a href="om-os.html">Om os</a></li>
+          `);
+
+                        $(".navbar-right").html(`
+                        <li><a href="addNewItem.html">Tilføj produkt</a></li>
+                        <li><a href="admin.html">Se ordrer</a></li>
+                        <li><a href="#" id="logout-link">Log ud</a></li>
+                        
+           `);
+                    }
+
                 } else {
                     $(".navbar-right").html(`
             <li><a href="signup.html"><span class="glyphicon glyphicon-user"></span> Opret Bruger</a></li>
@@ -264,3 +306,4 @@ const SDK = {
         }
     }
 };
+
