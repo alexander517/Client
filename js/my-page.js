@@ -36,9 +36,9 @@ $(document).ready(() => {
                         for (let i = 0; i < order.items.length; i++) {
                             let orderStatus = "";
                             if (order.isReady === true) {
-                                orderStatus = "Klar til afhentning";
+                                orderStatus = "Din order er <span style=\"color:#59cc33\">KLAR</span> til afhentning";
                             } else {
-                                orderStatus = "Ikke klar"
+                                orderStatus = "Din order er <span style=\"color:#ff0000\">IKKE</span> klar til afhentning"
                             }
 
                             $basketTbody.append(`
