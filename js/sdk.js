@@ -263,8 +263,8 @@ const SDK = {
                     } else {
                         $(".navbar-left").html(`
                         <li><a href="index.html">Hjem</a></li>
-                        <li><a href="shop.html">Shop</a></li>
-                        <li><a href="checkout.html">Kurv</a></li>
+                        <li><a href="admin.html">Shop</a></li>
+                        <li><a href="admin.html">Kurv</a></li>
                         <li><a href="om-os.html">Om os</a></li>
           `);
 
